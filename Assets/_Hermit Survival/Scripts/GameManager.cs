@@ -3,13 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
-{
+public class GameManager : MonoBehaviour {
     private static GameManager instance;
     public static GameManager Instance { get => instance; set => instance = value; }
+    public enum GameStates {
+        Initializing,
+        Loading,
+        Playing
+    }
+    public GameStates gameState = GameStates.Initializing;
 
-    void Awake(){
-        if (Instance == null){
+    void Awake() {
+        if (Instance == null) {
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
 
@@ -20,9 +25,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Update(){
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Space)) {
             EventManager.Instance.TriggerEvent(EventManager.Events.OnLevelStarted);
         }
     }
