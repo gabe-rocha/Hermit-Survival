@@ -18,13 +18,14 @@ public class PlayerStateIdle : IState {
     Player player;
 #endregion
 
-    public PlayerStateIdle(Player player) {
-        this.player = player;
+    public PlayerStateIdle() {
+        this.player = Player.Instance;
     }
 
 #region Private Methods
 
     void IState.OnEnter() {
+        Debug.Log("Idle");
 
     }
 
@@ -35,12 +36,12 @@ public class PlayerStateIdle : IState {
     IState IState.Tick() {
 
         var isMoving = player.characterController.velocity != Vector3.zero;
-        if (isMoving) {
+        if(isMoving) {
             return player.stateWalking;
         }
 
-        if (Input.GetButton("Fire1") && player.equipedTool != null) {
-            return player.stateUsingTool;
+        if(Input.GetButtonDown("Fire1")) {
+            return player.stateAttacking;
         }
 
         return this;

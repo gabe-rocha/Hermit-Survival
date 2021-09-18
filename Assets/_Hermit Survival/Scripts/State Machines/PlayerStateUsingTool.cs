@@ -19,16 +19,13 @@ public class PlayerStateUsingTool : IState {
     float lastUseTime;
 #endregion
 
-    public PlayerStateUsingTool(Player player) {
-        this.player = player;
+    public PlayerStateUsingTool() {
+        this.player = Player.Instance;
     }
 
 #region Private Methods
 
     void IState.OnEnter() {
-        lastUseTime = Time.time;
-
-        Physics.Raycast(Camera.main.gameObject.transform.position, player.transform.forward, player.equipedTool.range);
 
     }
 

@@ -18,13 +18,14 @@ public class PlayerStateWalking : IState {
     Player player;
 #endregion
 
-    public PlayerStateWalking(Player player) {
-        this.player = player;
+    public PlayerStateWalking() {
+        this.player = Player.Instance;
     }
 
 #region Private Methods
 
     void IState.OnEnter() {
+        Debug.Log("Walking");
 
     }
 
@@ -34,13 +35,13 @@ public class PlayerStateWalking : IState {
 
     IState IState.Tick() {
 
-        var isMoving = player.characterController.velocity != Vector3.zero;
-        if (!isMoving) {
-            return player.stateIdle;
+        if(Input.GetButton("Fire1")) {
+            return player.stateAttacking;
         }
 
-        if (Input.GetButton("Fire1") && player.equipedTool != null) {
-            return player.stateUsingTool;
+        var isMoving = player.characterController.velocity != Vector3.zero;
+        if(!isMoving) {
+            return player.stateIdle;
         }
 
         return this;

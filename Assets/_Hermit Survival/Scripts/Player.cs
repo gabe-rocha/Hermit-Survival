@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,42 +8,52 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour {
 
 #region Public Fields
-
+    public static Player Instance { get => instance; set => instance = value; }
 #endregion
 
 #region Private Serializable Fields
+    [SerializeField] internal Weapon equipedWeapon;
 #endregion
 
 #region Private Fields
+    private static Player instance;
+    private Inventory inventory;
     private StateMachine stateMachine;
-    internal IState stateIdle, stateWalking, stateUsingTool;
+    internal IState stateIdle, stateWalking, stateAttacking;
     internal CharacterController characterController;
     internal Animator animator;
-    internal bool isMoving = false;
-    internal ITool equipedTool;
-
 #endregion
 
 #region MonoBehaviour CallBacks
     void Awake() {
+        if(Instance == null) {
+            Instance = this;
+        } else {
+            Destroy(this);
+        }
+
         characterController = GetComponent<CharacterController>();
-        if (characterController == null) {
+        if(characterController == null) {
             Debug.LogError($"{name} is missing a component - CharacterController");
         }
 
         animator = GetComponent<Animator>();
-        if (animator == null) {
+        if(animator == null) {
             Debug.LogError($"{name} is missing a component - Animator");
         }
-
     }
 
     void Start() {
-        stateIdle = new PlayerStateIdle(this);
-        stateWalking = new PlayerStateWalking(this);
+        stateIdle = new PlayerStateIdle();
+        stateWalking = new PlayerStateWalking();
+        stateAttacking = new PlayerStateAttacking();
 
         stateMachine = new StateMachine();
         stateMachine.SetState(stateIdle);
+    }
+
+    internal void AddItem(Item item) {
+        inventory.AddItem(item);
     }
 
     void Update() {

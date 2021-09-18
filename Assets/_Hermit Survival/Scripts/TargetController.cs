@@ -11,20 +11,18 @@ public class TargetController : MonoBehaviour {
 #endregion
 
 #region Private Serializable Fields
-    [SerializeField] private LayerMask targettable;
 #endregion
 
 #region Private Fields
-
+    private Player player;
 #endregion
 
 #region MonoBehaviour CallBacks
     void Awake() {
-        //component = GetComponent<Component>();
-        //if(component == null) {
-        //Debug.LogError($"{name} is missing a component");
-        //}
-
+        player = GetComponent<Player>();
+        if(player == null) {
+            Debug.LogError($"{name} couldn't find the Player");
+        }
     }
 
     void Start() {
@@ -32,18 +30,26 @@ public class TargetController : MonoBehaviour {
     }
 
     void Update() {
-        if (GameManager.Instance.gameState != GameManager.GameStates.Playing) {
-            return;
-        }
+        // if(GameManager.Instance.gameState != GameManager.GameStates.Playing) {
+        //     return;
+        // }
 
-        var screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
-        var screenCenterWorldPos = Camera.main.ScreenToWorldPoint(screenCenter);
-        var ray = Camera.main.ScreenPointToRay(screenCenter);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit)) {
-            Debug.Log($"Looking at {hit.collider.gameObject.name}");
-        }
+        // var ray = Camera.main.ScreenPointToRay(Input.mousePosition); //mouse will always be in the middle of the screen in a FPS
+        // RaycastHit hit;
+        // if(Physics.Raycast(ray, out hit)) {
+        //     Transform selectable = hit.transform;
+        //     if(selectable.CompareTag("Selectable")) {
+        //         var distance = Mathf.Abs(selectable.position.z - player.transform.position.z);
+        //         if(distance <= player.lookAtRange) {
+        //             player.lookingAt = hit.transform;
+        //             EventManager.Instance.TriggerEventWithStringParam(EventManager.Events.PlayerLookingAt, hit.transform.name);
+        //         }
+        //     }
+        // } else {
+        //     player.lookingAt = null;
+        // }
 
+        // Debug.DrawRay(player.equipedTool.transform.position, player.equipedTool.transform.forward * player.equipedTool.range, Color.green);
     }
 #endregion
 
