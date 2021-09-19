@@ -29,12 +29,12 @@ public class PlayerStateAttacking : IState {
     void IState.OnEnter() {
         Debug.Log("Attacking");
 
-        if(Time.time > lastAttackTime + (1f / player.equipedWeapon.weaponData.weaponSpeed)) {
+        if (Time.time > lastAttackTime + (1f / player.equipedWeapon.weaponData.weaponSpeed)) {
             lastAttackTime = Time.time;
             canAttack = true;
-            if(player.equipedWeapon != null) {
+            if (player.equipedWeapon != null) {
                 player.animator.SetTrigger("AttackWeapon");
-            } else if(player.equipedWeapon != null) {
+            } else if (player.equipedWeapon != null) {
                 player.animator.SetTrigger("AttackPunch");
             }
         }
@@ -46,14 +46,14 @@ public class PlayerStateAttacking : IState {
 
     IState IState.Tick() {
 
-        if(canAttack) {
+        if (canAttack) {
             canAttack = false;
-            var arrayHits = Physics.BoxCastAll(Camera.main.transform.position, Vector3.one * (player.equipedWeapon.weaponData.weaponRange / 2), Camera.main.transform.forward, Quaternion.identity, player.equipedWeapon.weaponData.weaponRange);
+            var arrayHits = Physics.BoxCastAll(Camera.main.transform.position, Vector3.one * (player.equipedWeapon.weaponData.weaponRange / 4), Camera.main.transform.forward, Quaternion.identity, player.equipedWeapon.weaponData.weaponRange);
 
             foreach (var hit in arrayHits) {
                 IDamageable damageable;
                 hit.transform.gameObject.TryGetComponent<IDamageable>(out damageable);
-                if(damageable != null) {
+                if (damageable != null) {
                     damageable.Damage(UnityEngine.Random.Range(player.equipedWeapon.weaponData.weaponDamageRange.x, player.equipedWeapon.weaponData.weaponDamageRange.y + 1));
                     Debug.Log($"I just attacked a {hit.transform.name}");
                 }
@@ -61,7 +61,7 @@ public class PlayerStateAttacking : IState {
         }
 
         var isMoving = player.characterController.velocity != Vector3.zero;
-        if(!isMoving) {
+        if (!isMoving) {
             return player.stateIdle;
         } else {
             return player.stateWalking;

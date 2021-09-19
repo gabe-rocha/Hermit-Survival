@@ -42,10 +42,16 @@ public class Inventory {
     //     }
     // }
     public void AddItem(Item item) {
-        if(item.itemData.isStackable) {
-            int index = listOfItems.FindIndex(0, listOfItems.Count - 1, (x) => x.itemType == item.itemData.itemType);
-            if(index >= 0) {
-                listOfItems[index].amountInInventory += 1;
+
+        if (item.itemData.isStackable) {
+            if (listOfItems.Count > 0) {
+                int index = listOfItems.FindIndex(0, listOfItems.Count - 1, (x) => x.itemType == item.itemData.itemType);
+                if (index >= 0) {
+                    listOfItems[index].amountInInventory += 1;
+                }
+            } else {
+                InventoryItem invItem = new InventoryItem() { itemType = item.itemData.itemType, amountInInventory = 1 };
+                listOfItems.Add(invItem);
             }
         } else {
             InventoryItem invItem = new InventoryItem() { itemType = item.itemData.itemType, amountInInventory = 1 };

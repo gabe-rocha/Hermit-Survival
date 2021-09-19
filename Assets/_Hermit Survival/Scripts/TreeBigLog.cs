@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Tree : MonoBehaviour, IDamageable {
+public class TreeBigLog : MonoBehaviour, IDamageable {
 
 #region Public Fields
 
@@ -12,7 +12,7 @@ public class Tree : MonoBehaviour, IDamageable {
 
 #region Private Serializable Fields
     [SerializeField] private ItemSO itemData;
-    [SerializeField] private GameObject pfTreeStump, pfTreeBigLog;
+    [SerializeField] private GameObject pfBottomLog, pfTopLog;
 #endregion
 
 #region Private Fields
@@ -23,11 +23,18 @@ public class Tree : MonoBehaviour, IDamageable {
     void Awake() {
         rb = GetComponent<Rigidbody>();
         if (rb == null) {
-            Debug.LogError($"{name} is missing a RigidBody");
+            Debug.LogError($"{name} is missing a rigid body");
         }
     }
 
-    void Start() { }
+    void Start() {
+        rb.AddForce(transform.forward * 200);
+        transform.Rotate(Vector3.up * UnityEngine.Random.Range(1, 15));
+    }
+
+    void Update() {
+
+    }
 #endregion
 
 #region Private Methods
@@ -35,14 +42,11 @@ public class Tree : MonoBehaviour, IDamageable {
 #endregion
 
 #region Public Methods
-    public void Damage(int amount) {
-
-        itemData.health -= amount;
+    public void Damage(int value) {
 
         if (itemData.health <= 0) {
-            //todo play particles
-            Instantiate(pfTreeStump, transform.localPosition, Quaternion.identity, null);
-            Instantiate(pfTreeBigLog, transform.localPosition, Quaternion.identity, null);
+            Instantiate(pfTopLog, transform.position, Quaternion.identity, null);
+            Instantiate(pfBottomLog, transform.position, Quaternion.identity, null);
             Destroy(gameObject);
         }
     }

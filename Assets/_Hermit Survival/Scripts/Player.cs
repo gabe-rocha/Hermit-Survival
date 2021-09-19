@@ -26,24 +26,25 @@ public class Player : MonoBehaviour {
 
 #region MonoBehaviour CallBacks
     void Awake() {
-        if(Instance == null) {
+        if (Instance == null) {
             Instance = this;
         } else {
             Destroy(this);
         }
 
         characterController = GetComponent<CharacterController>();
-        if(characterController == null) {
+        if (characterController == null) {
             Debug.LogError($"{name} is missing a component - CharacterController");
         }
 
         animator = GetComponent<Animator>();
-        if(animator == null) {
+        if (animator == null) {
             Debug.LogError($"{name} is missing a component - Animator");
         }
     }
 
     void Start() {
+        inventory = new Inventory();
         stateIdle = new PlayerStateIdle();
         stateWalking = new PlayerStateWalking();
         stateAttacking = new PlayerStateAttacking();

@@ -35,12 +35,12 @@ public class PlayerStateWalking : IState {
 
     IState IState.Tick() {
 
-        if(Input.GetButton("Fire1")) {
+        if (Input.GetButton("Fire1")) {
             return player.stateAttacking;
         }
 
         var isMoving = player.characterController.velocity != Vector3.zero;
-        if(!isMoving) {
+        if (!isMoving) {
             return player.stateIdle;
         }
 

@@ -23,21 +23,21 @@ public class WoodPiece : Item {
 #region MonoBehaviour CallBacks
     void Awake() {
         rb = GetComponent<Rigidbody>();
-        if(rb == null) {
+        if (rb == null) {
             Debug.LogError($"{name} is missing a rigidbody");
-        }
-
-        if(player == null) {
-            Debug.LogError($"{name} is missing a player");
         }
     }
 
     void Start() {
         player = Player.Instance;
+
+        if (player == null) {
+            Debug.LogError($"{name} is missing a player");
+        }
     }
 
     void Update() {
-        if(Vector3.Distance(transform.position, player.transform.position) <= range) {
+        if (Vector3.Distance(transform.position, player.transform.position) <= range) {
             rb.isKinematic = true;
             transform.position = Vector3.MoveTowards(transform.position, player.transform.position, moveSpeed * Time.deltaTime);
         } else {
@@ -46,7 +46,7 @@ public class WoodPiece : Item {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if(other.CompareTag("Player")) {
+        if (other.CompareTag("Player")) {
             player.AddItem(this);
             Destroy(gameObject);
         }

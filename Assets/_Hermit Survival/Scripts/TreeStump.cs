@@ -14,10 +14,10 @@ public class TreeStump : MonoBehaviour, IDamageable {
 
     void IDamageable.Damage(int amount) {
         health -= amount;
-        if(health <= 0) {
+        if (health <= 0) {
 
             for (var a = 0; a < itemData.relatedNumber; a++) {
-                Instantiate(pfWood, null);
+                Instantiate(pfWood, transform.position, Quaternion.identity, null);
             }
 
             //todo play particles
