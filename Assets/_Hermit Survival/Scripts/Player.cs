@@ -21,26 +21,26 @@ public class Player : MonoBehaviour {
     private StateMachine stateMachine;
     internal IState stateIdle, stateWalking, stateAttacking;
     internal CharacterController characterController;
-    internal Animator animator;
+    // internal Animator animator;
 #endregion
 
 #region MonoBehaviour CallBacks
     void Awake() {
-        if (Instance == null) {
+        if(Instance == null) {
             Instance = this;
         } else {
             Destroy(this);
         }
 
         characterController = GetComponent<CharacterController>();
-        if (characterController == null) {
+        if(characterController == null) {
             Debug.LogError($"{name} is missing a component - CharacterController");
         }
 
-        animator = GetComponent<Animator>();
-        if (animator == null) {
-            Debug.LogError($"{name} is missing a component - Animator");
-        }
+        // animator = GetComponentInChildren<Animator>();
+        // if(animator == null) {
+        //     Debug.LogError($"{name} is missing a component - Animator");
+        // }
     }
 
     void Start() {
