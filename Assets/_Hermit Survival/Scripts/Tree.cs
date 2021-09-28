@@ -7,16 +7,21 @@ using UnityEngine.UI;
 public class Tree : MonoBehaviour, IDamageable {
 
 #region Public Fields
-
+    public enum TreeState {
+        Tree,
+        Log,
+        Stump
+    }
 #endregion
 
 #region Private Serializable Fields
-    [SerializeField] private ItemSO itemData;
-    [SerializeField] private GameObject pfTreeStump, pfTreeBigLog;
+    [SerializeField] private TreeState treeState;
+    [SerializeField] private GameObject pfTreeStump, pfTreeLog;
 #endregion
 
 #region Private Fields
-    Rigidbody rb;
+    private Rigidbody rb;
+    private HealthSystem healthSystem;
 #endregion
 
 #region MonoBehaviour CallBacks
@@ -25,6 +30,19 @@ public class Tree : MonoBehaviour, IDamageable {
         if (rb == null) {
             Debug.LogError($"{name} is missing a RigidBody");
         }
+
+        switch (treeState) {
+            case TreeState.Tree:
+                healthSystem = new HealthSystem(Data.treeCommonMaxHealth);
+                break;
+            case TreeState.Log:
+                healthSystem = new HealthSystem(Data.logCommonMaxHealth);
+                break;
+            case TreeState.Stump:
+                healthSystem = new HealthSystem(Data.stumpCommonMaxHealth);
+                break;
+        }
+
     }
 
     void Start() { }
@@ -37,12 +55,27 @@ public class Tree : MonoBehaviour, IDamageable {
 #region Public Methods
     public void Damage(int amount) {
 
-        itemData.health -= amount;
+        healthSystem.Damage(amount);
 
-        if (itemData.health <= 0) {
+        if (healthSystem.IsDead()) {
             //todo play particles
-            Instantiate(pfTreeStump, transform.localPosition, Quaternion.identity, null);
-            Instantiate(pfTreeBigLog, transform.localPosition, Quaternion.identity, null);
+            switch (treeState) {
+                case TreeState.Tree:
+                    Instantiate(pfTreeStump, transform.localPosition, Quaternion.identity, null);
+
+                    float stumpHeight = pfTreeStump.transform.localScale.y;
+                    Vector3 bottomLogPos = new Vector3(transform.position.x, transform.position.y + stumpHeight, transform.position.z);
+                    var bottomLog = Instantiate(pfTreeLog, bottomLogPos, Quaternion.identity, null);
+                    bottomLog.transform.Rotate(Vector3.forward * 15);
+
+                    float logHeight = pfTreeLog.transform.localScale.y;
+                    Vector3 topLogPos = new Vector3(transform.position.x, transform.position.y + stumpHeight + logHeight, transform.position.z);
+                    var topLog = Instantiate(pfTreeLog, topLogPos, Quaternion.identity, null);
+                    topLog.transform.Rotate(Vector3.forward * 15);
+                    break;
+                case TreeState.Log:
+                    break;
+            }
             Destroy(gameObject);
         }
     }
