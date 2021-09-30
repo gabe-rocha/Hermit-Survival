@@ -63,7 +63,12 @@ public class Player : MonoBehaviour {
 #endregion
 
 #region Private Methods
-
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Gatherable")) {
+            Debug.Log($"Player touched a Gatherable: {other.gameObject.name}");
+            Destroy(other.gameObject);
+        }
+    }
 #endregion
 
 #region Public Methods

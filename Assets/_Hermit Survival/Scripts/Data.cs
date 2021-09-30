@@ -11,8 +11,8 @@ public static class Data {
     }
 
     internal static int treeCommonMaxHealth = 30;
-    internal static int logCommonMaxHealth = 20;
+    internal static int halfLogCommonMaxHealth = 20;
     internal static int stumpCommonMaxHealth = 15;
-    internal static int logCommonWoodAmount = 5;
+    internal static int halfLogCommonWoodAmount = 5;
     internal static int stumpCommonWoodAmount = 2;
 }

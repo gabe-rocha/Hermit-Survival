@@ -36,15 +36,15 @@ public class PlayerStateAttacking : IState {
 
     IState IState.Tick() {
 
-        if(Time.time > lastAttackTime + (1f / player.equipedWeapon.weaponData.weaponSpeed)) {
+        if (Time.time > lastAttackTime + (1f / player.equipedWeapon.weaponData.weaponSpeed)) {
             lastAttackTime = Time.time;
             canAttack = true;
         }
 
-        if(canAttack) {
+        if (canAttack) {
             canAttack = false;
 
-            float attackRange = 2;
+            float attackRange = 1;
             Collider[] arrColliders = Physics.OverlapSphere(player.transform.position + player.transform.forward, attackRange);
             // Physics.SphereCastAll(player.transform.position + player.transform.forward, attackRange, player.transform.forward, attackRange);
 
@@ -52,7 +52,7 @@ public class PlayerStateAttacking : IState {
                 //if damageable, damage
                 var go = col.gameObject;
                 var damageable = go.GetComponent<IDamageable>();
-                if(damageable != null) {
+                if (damageable != null) {
                     var damage = Random.Range(player.equipedWeapon.weaponData.weaponDamageRange.x, player.equipedWeapon.weaponData.weaponDamageRange.y);
                     damageable.Damage(damage);
                     Debug.Log($"{go.name} hit for {damage}");
@@ -62,7 +62,7 @@ public class PlayerStateAttacking : IState {
         }
 
         var isMoving = player.characterController.velocity != Vector3.zero;
-        if(!isMoving) {
+        if (!isMoving) {
             return player.stateIdle;
         } else {
             return player.stateWalking;

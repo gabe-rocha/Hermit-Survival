@@ -22,7 +22,7 @@ public class ItemSO : ScriptableObject {
     public string itemName;
 
     [Tooltip("If health and related number is 100, it will restore 100 health")]
-    public float relatedNumber;
+    public float amount;
     public bool isStackable;
     public int maxStackSize;
     public float weight;

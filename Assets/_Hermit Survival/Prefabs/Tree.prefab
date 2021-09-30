@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1761568406542959227}
   - component: {fileID: 2968257929064474060}
   - component: {fileID: 2968257929064474061}
-  - component: {fileID: 5362468613963615777}
   m_Layer: 0
   m_Name: Tree
   m_TagString: Untagged
@@ -44,12 +43,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2968257929064474062}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 120014fc11759bc44a65bf2dd00ac929, type: 3}
+  m_Script: {fileID: 11500000, guid: e7691193f637c4d8d84b623a27c08708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treeState: 0
   pfTreeStump: {fileID: 2968257929064474062, guid: 8aa4322d734f84e49b38c21dd9eed035, type: 3}
-  pfTreeLog: {fileID: 2968257929064474062, guid: f3b1403e6a78e4114965ea1f47fffed2, type: 3}
+  pfTreeLog: {fileID: 2968257929064474062, guid: aacb19994c8574df995474fab88be0f7, type: 3}
 --- !u!136 &2968257929064474060
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -80,21 +78,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5362468613963615777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2968257929064474062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 120014fc11759bc44a65bf2dd00ac929, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  treeState: 0
-  pfTreeStump: {fileID: 0}
-  pfTreeLog: {fileID: 0}
 --- !u!1 &2968257929260762598
 GameObject:
   m_ObjectHideFlags: 0
