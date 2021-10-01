@@ -73,6 +73,7 @@ namespace StarterAssets {
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
+		private float _attack01TimeoutDelta;
 		private float _fallTimeoutDelta;
 
 		// animation IDs
@@ -93,7 +94,7 @@ namespace StarterAssets {
 
 		private void Awake() {
 			// get a reference to our main camera
-			if(_mainCamera == null) {
+			if (_mainCamera == null) {
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
 		}
@@ -136,14 +137,14 @@ namespace StarterAssets {
 			Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
 
 			// update animator if using character
-			if(_hasAnimator) {
+			if (_hasAnimator) {
 				_animator.SetBool(_animIDGrounded, Grounded);
 			}
 		}
 
 		private void CameraRotation() {
 			// if there is an input and camera position is not fixed
-			if(_input.look.sqrMagnitude >= _threshold && !LockCameraPosition) {
+			if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition) {
 				_cinemachineTargetYaw += _input.look.x * Time.deltaTime * mouseSensitivity;
 				_cinemachineTargetPitch += _input.look.y * Time.deltaTime * mouseSensitivity;
 			}
@@ -164,7 +165,7 @@ namespace StarterAssets {
 
 			// note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is no input, set the target speed to 0
-			if(_input.move == Vector2.zero)targetSpeed = 0.0f;
+			if (_input.move == Vector2.zero)targetSpeed = 0.0f;
 
 			// a reference to the players current horizontal velocity
 			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -173,7 +174,7 @@ namespace StarterAssets {
 			float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
 			// accelerate or decelerate to target speed
-			if(currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset) {
+			if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset) {
 				// creates curved result rather than a linear one giving a more organic speed change
 				// note T in Lerp is clamped, so we don't need to clamp our speed
 				_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
@@ -190,7 +191,7 @@ namespace StarterAssets {
 
 			// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is a move input rotate player when the player is moving
-			if(_input.move != Vector2.zero) {
+			if (_input.move != Vector2.zero) {
 				_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + _mainCamera.transform.eulerAngles.y;
 				float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, RotationSmoothTime);
 
@@ -204,41 +205,59 @@ namespace StarterAssets {
 			_controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
 			// update animator if using character
-			if(_hasAnimator) {
+			if (_hasAnimator) {
 				_animator.SetFloat(_animIDSpeed, _animationBlend);
 				_animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
 			}
 		}
 
 		private void JumpAndGravity() {
-			if(Grounded) {
+
+			// Attack01
+			if (_input.attack01 && _attack01TimeoutDelta <= 0.0f) {
+				// the square root of H * -2 * G = how much velocity needed to reach desired height
+
+				// update animator if using character
+				if (_hasAnimator) {
+					_animator.SetTrigger("Attack01");
+				}
+			}
+
+			// attack01 timeout
+			if (_attack01TimeoutDelta >= 0.0f) {
+				_attack01TimeoutDelta -= Time.deltaTime;
+			} else {
+				_input.attack01 = false;
+			}
+
+			if (Grounded) {
 				// reset the fall timeout timer
 				_fallTimeoutDelta = FallTimeout;
 
 				// update animator if using character
-				if(_hasAnimator) {
+				if (_hasAnimator) {
 					_animator.SetBool(_animIDJump, false);
 					_animator.SetBool(_animIDFreeFall, false);
 				}
 
 				// stop our velocity dropping infinitely when grounded
-				if(_verticalVelocity < 0.0f) {
+				if (_verticalVelocity < 0.0f) {
 					_verticalVelocity = -2f;
 				}
 
 				// Jump
-				if(_input.jump && _jumpTimeoutDelta <= 0.0f) {
+				if (_input.jump && _jumpTimeoutDelta <= 0.0f) {
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
 					// update animator if using character
-					if(_hasAnimator) {
+					if (_hasAnimator) {
 						_animator.SetBool(_animIDJump, true);
 					}
 				}
 
 				// jump timeout
-				if(_jumpTimeoutDelta >= 0.0f) {
+				if (_jumpTimeoutDelta >= 0.0f) {
 					_jumpTimeoutDelta -= Time.deltaTime;
 				}
 			} else {
@@ -246,11 +265,11 @@ namespace StarterAssets {
 				_jumpTimeoutDelta = JumpTimeout;
 
 				// fall timeout
-				if(_fallTimeoutDelta >= 0.0f) {
+				if (_fallTimeoutDelta >= 0.0f) {
 					_fallTimeoutDelta -= Time.deltaTime;
 				} else {
 					// update animator if using character
-					if(_hasAnimator) {
+					if (_hasAnimator) {
 						_animator.SetBool(_animIDFreeFall, true);
 					}
 				}
@@ -260,14 +279,14 @@ namespace StarterAssets {
 			}
 
 			// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
-			if(_verticalVelocity < _terminalVelocity) {
+			if (_verticalVelocity < _terminalVelocity) {
 				_verticalVelocity += Gravity * Time.deltaTime;
 			}
 		}
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax) {
-			if(lfAngle < -360f)lfAngle += 360f;
-			if(lfAngle > 360f)lfAngle -= 360f;
+			if (lfAngle < -360f)lfAngle += 360f;
+			if (lfAngle > 360f)lfAngle -= 360f;
 			return Mathf.Clamp(lfAngle, lfMin, lfMax);
 		}
 
@@ -275,7 +294,7 @@ namespace StarterAssets {
 			Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
 			Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
-			if(Grounded)Gizmos.color = transparentGreen;
+			if (Grounded)Gizmos.color = transparentGreen;
 			else Gizmos.color = transparentRed;
 
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider

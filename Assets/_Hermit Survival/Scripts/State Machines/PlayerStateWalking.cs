@@ -35,7 +35,7 @@ public class PlayerStateWalking : IState {
 
     IState IState.Tick() {
 
-        if (Input.GetButton("Fire1")) {
+        if (Input.GetButtonDown("Fire1")) {
             return player.stateAttacking;
         }
 

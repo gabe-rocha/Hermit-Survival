@@ -27,46 +27,48 @@ public class PlayerStateAttacking : IState {
 
 #region Private Methods
     void IState.OnEnter() {
+        player.thirdPersonController.MoveSpeed = 0.1f;
         Debug.Log("Player State: Attacking");
+
+        lastAttackTime = Time.time;
+        player.animator.SetTrigger("Attack01");
+
+        float attackRange = 1;
+        Collider[] arrColliders = Physics.OverlapSphere(player.transform.position + player.transform.forward, attackRange);
+        // Physics.SphereCastAll(player.transform.position + player.transform.forward, attackRange, player.transform.forward, attackRange);
+
+        foreach (var col in arrColliders) {
+            //if damageable, damage
+            var go = col.gameObject;
+            var damageable = go.GetComponent<IDamageable>();
+            if (damageable != null) {
+                var damage = Random.Range(player.equipedWeapon.weaponData.weaponDamageRange.x, player.equipedWeapon.weaponData.weaponDamageRange.y);
+                damageable.Damage(damage);
+                Debug.Log($"{go.name} was hit for {damage}");
+            }
+        }
     }
 
     void IState.OnExit() {
 
+        player.thirdPersonController.MoveSpeed = 5f;
     }
 
     IState IState.Tick() {
 
         if (Time.time > lastAttackTime + (1f / player.equipedWeapon.weaponData.weaponSpeed)) {
-            lastAttackTime = Time.time;
-            canAttack = true;
-        }
 
-        if (canAttack) {
-            canAttack = false;
-
-            float attackRange = 1;
-            Collider[] arrColliders = Physics.OverlapSphere(player.transform.position + player.transform.forward, attackRange);
-            // Physics.SphereCastAll(player.transform.position + player.transform.forward, attackRange, player.transform.forward, attackRange);
-
-            foreach (var col in arrColliders) {
-                //if damageable, damage
-                var go = col.gameObject;
-                var damageable = go.GetComponent<IDamageable>();
-                if (damageable != null) {
-                    var damage = Random.Range(player.equipedWeapon.weaponData.weaponDamageRange.x, player.equipedWeapon.weaponData.weaponDamageRange.y);
-                    damageable.Damage(damage);
-                    Debug.Log($"{go.name} hit for {damage}");
-                }
+            var isMoving = player.characterController.velocity != Vector3.zero;
+            if (!isMoving) {
+                return player.stateIdle;
+            } else {
+                return player.stateWalking;
             }
 
+        } else {
+            return this;
         }
 
-        var isMoving = player.characterController.velocity != Vector3.zero;
-        if (!isMoving) {
-            return player.stateIdle;
-        } else {
-            return player.stateWalking;
-        }
     }
 
 #endregion

@@ -3,15 +3,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-namespace StarterAssets
-{
-	public class StarterAssetsInputs : MonoBehaviour
-	{
+namespace StarterAssets {
+	public class StarterAssetsInputs : MonoBehaviour {
 		[Header("Character Input Values")]
 		public Vector2 move;
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool attack01;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -23,67 +22,62 @@ namespace StarterAssets
 #endif
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-		public void OnMove(InputValue value)
-		{
+		public void OnMove(InputValue value) {
 			MoveInput(value.Get<Vector2>());
 		}
 
-		public void OnLook(InputValue value)
-		{
-			if(cursorInputForLook)
-			{
+		public void OnLook(InputValue value) {
+			if (cursorInputForLook) {
 				LookInput(value.Get<Vector2>());
 			}
 		}
 
-		public void OnJump(InputValue value)
-		{
+		public void OnJump(InputValue value) {
 			JumpInput(value.isPressed);
 		}
 
-		public void OnSprint(InputValue value)
-		{
+		public void OnAttack01(InputValue value) {
+			Attack01Input(value.isPressed);
+		}
+
+		public void OnSprint(InputValue value) {
 			SprintInput(value.isPressed);
 		}
 #else
-	// old input sys if we do decide to have it (most likely wont)...
+		// old input sys if we do decide to have it (most likely wont)...
 #endif
 
-
-		public void MoveInput(Vector2 newMoveDirection)
-		{
+		public void MoveInput(Vector2 newMoveDirection) {
 			move = newMoveDirection;
-		} 
+		}
 
-		public void LookInput(Vector2 newLookDirection)
-		{
+		public void LookInput(Vector2 newLookDirection) {
 			look = newLookDirection;
 		}
 
-		public void JumpInput(bool newJumpState)
-		{
+		public void JumpInput(bool newJumpState) {
 			jump = newJumpState;
 		}
+		public void Attack01Input(bool newAttack01State) {
+			attack01 = newAttack01State;
+		}
 
-		public void SprintInput(bool newSprintState)
-		{
+		public void SprintInput(bool newSprintState) {
 			sprint = newSprintState;
 		}
 
 #if !UNITY_IOS || !UNITY_ANDROID
 
-		private void OnApplicationFocus(bool hasFocus)
-		{
+		private void OnApplicationFocus(bool hasFocus) {
 			SetCursorState(cursorLocked);
 		}
 
-		private void SetCursorState(bool newState)
-		{
+		private void SetCursorState(bool newState) {
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 		}
 
 #endif
 
 	}
-	
+
 }

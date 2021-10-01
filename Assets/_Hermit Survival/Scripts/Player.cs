@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using StarterAssets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ public class Player : MonoBehaviour {
     private StateMachine stateMachine;
     internal IState stateIdle, stateWalking, stateAttacking;
     internal CharacterController characterController;
+    internal ThirdPersonController thirdPersonController;
     internal Animator animator;
 #endregion
 
@@ -33,6 +35,8 @@ public class Player : MonoBehaviour {
         }
 
         characterController = GetComponent<CharacterController>();
+        thirdPersonController = GetComponent<ThirdPersonController>();
+
         if (characterController == null) {
             Debug.LogError($"{name} is missing a component - CharacterController");
         }

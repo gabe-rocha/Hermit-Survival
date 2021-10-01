@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponType: 0
   weaponName: Hatchet
   weaponRange: 1
-  weaponSpeed: 3
+  weaponSpeed: 1
   weaponDamageRange: {x: 3, y: 5}
   currentDurability: 50
   maxDurability: 50
